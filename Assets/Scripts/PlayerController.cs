@@ -2,9 +2,13 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    [Header("Elements")]
     [SerializeField] Rigidbody rb;
     [SerializeField] Animator anim;
+    [Header("Settings")]
+    [Tooltip("Bu deðiþken oyuncunun hýzýný belirler")]
     [SerializeField] float speed;
+    [Tooltip("Bu deðiþken oyuncunun saða sola kaç metre gideceðini ayarlar")]
     [SerializeField] float shift = 2;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
