@@ -6,6 +6,10 @@ public class PlayerController : MonoBehaviour
     [Header("Elements")]
     [SerializeField] Rigidbody rb;
     [SerializeField] public Animator anim;
+    [SerializeField] AudioClip bonusSound, CoinSound, DeathSound, MagnetCoinSound, ShieldSound;
+    [SerializeField] AudioSource playerSounds;
+
+
     [Header("Settings")]
     [Tooltip("Bu deðiþken oyuncunun hýzýný belirler")]
     [SerializeField] float speed;
@@ -142,7 +146,7 @@ public class PlayerController : MonoBehaviour
             switch (collectables.collectablesEnum)
             {
                 case CollectablesEnum.Coin:
-                    AddScrore(collectables.toBeAddedScore);
+                    AddScore(collectables.toBeAddedScore);
                     break;
                 case CollectablesEnum.Shield:
                     ActivateShield();
@@ -175,8 +179,19 @@ public class PlayerController : MonoBehaviour
     {
         speed = beforeSpeed;
     }
-    void AddScrore(int toBeAddedScore)
+    void AddScore(int toBeAddedScore)
     {
+        if (isMagnetActive)
+        {
+            playerSounds.clip = MagnetCoinSound;
+            playerSounds.Play();
+        }
+        else
+        {
+            playerSounds.clip = CoinSound;
+            playerSounds.Play();
+        }
+
         if (is2XActive)
         {
             toBeAddedScore *= 2;

@@ -10,6 +10,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] public GameObject gameRestartMenu;
     [SerializeField] public TextMeshProUGUI endScore;
     [SerializeField] public TextMeshProUGUI gameScore;
+   
 
     public void StartGame()
     {
@@ -21,6 +22,7 @@ public class UIManager : MonoBehaviour
     {
         gameStartMenu.SetActive(true);
         gameRestartMenu.SetActive(false);
+
     }
 
 
