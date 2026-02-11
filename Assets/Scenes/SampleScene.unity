@@ -334,7 +334,7 @@ GameObject:
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
   - component: {fileID: 963194229}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Main Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -579,7 +579,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -9.446289}
+  m_AnchoredPosition: {x: 0, y: -9}
   m_SizeDelta: {x: -1291.6047, y: -267.3484}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1318981903
@@ -1016,7 +1016,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -9.446289}
+  m_AnchoredPosition: {x: 0, y: -9}
   m_SizeDelta: {x: -1291.6047, y: -267.3484}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1546431383
@@ -1494,6 +1494,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   road:
   - {fileID: 4709703470700413457, guid: 1734c05a857e1f24592ec145b1cbec12, type: 3}
+  - {fileID: 4709703470700413457, guid: 0d9c77c8da2865148b441256e11ff9d4, type: 3}
   player: {fileID: 8139219225889131356}
   roadParent: {fileID: 171878243}
   collectables:
@@ -4445,7 +4446,7 @@ MonoBehaviour:
   MagnetVFX: {fileID: 1590415177872986601, guid: acdb90624a404aa438447006f1026065, type: 3}
   WallBreakVFX: {fileID: 725748389856807714, guid: 4bda94453d2ca7444a0fff05b2d425f5, type: 3}
   ShieldVFX: {fileID: 4772634663576830964, guid: e1385af346f4e624eb313ec1ea4fcd7e, type: 3}
-  speed: 8
+  speed: 10
   shift: 2
   isDead: 0
   score: 0
