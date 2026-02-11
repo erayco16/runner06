@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject[] road;
     [SerializeField] Transform player;
     [SerializeField] Transform roadParent;
+    [SerializeField] GameObject[] collectables;
 
     int startRoadCount = 2;
 
@@ -16,7 +17,17 @@ public class GameManager : MonoBehaviour
         {
             GenerateRoad();
         }
+        SpawnCollectable();
     }
+
+
+    void SpawnCollectable()
+    {
+        GameObject collectableObject = Instantiate(collectables[Random.Range(0, collectables.Length)], player.position + new Vector3(0, 0.5f, 50f), Quaternion.identity);
+        
+        Invoke("SpawnCollectable", Random.Range(3f, 10f));
+    }
+
 
     private void Update()
     {

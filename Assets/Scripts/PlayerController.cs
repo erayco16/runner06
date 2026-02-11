@@ -5,14 +5,22 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Elements")]
     [SerializeField] Rigidbody rb;
-    [SerializeField] Animator anim;
+    [SerializeField] public Animator anim;
     [Header("Settings")]
     [Tooltip("Bu deðiþken oyuncunun hýzýný belirler")]
     [SerializeField] float speed;
     [Tooltip("Bu deðiþken oyuncunun saða sola kaç metre gideceðini ayarlar")]
     [SerializeField] float shift = 2;
-    bool isDead;
-    [SerializeField] int score;
+    [HideInInspector] public bool isDead;
+    [SerializeField] public int score;
+    [HideInInspector] public bool isStart;
+    [HideInInspector] public float floatScore;
+    [HideInInspector] public float passedTime;
+    [SerializeField] int Health;
+    float beforeSpeed;
+
+    public bool is2XActive, isShieldActive, isMagnetActive;
+    bool isMove;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -22,9 +30,30 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        passedTime += Time.deltaTime;
+        if (passedTime > 10)
+        {
+            speed += 0.3f;
+            passedTime = 0;
+        }
+
+        if (!isStart) return;
+
         if (isDead) return;
-            
-        transform.Translate(Vector3.forward * speed * Time.deltaTime);
+
+        if (is2XActive)
+        {
+            floatScore += Time.deltaTime;
+        }
+        
+        floatScore += Time.deltaTime;
+        if (floatScore > 1)
+        {
+            score += 1;
+            floatScore = 0;
+        }
+
+            transform.Translate(Vector3.forward * speed * Time.deltaTime);
         #region Karakter Sýnýrlama
         /*if (Input.GetKey(KeyCode.A))
         {
@@ -45,20 +74,28 @@ public class PlayerController : MonoBehaviour
         */
 
 
-        if (Input.GetKeyDown(KeyCode.A) && transform.position.x>-0.5f)
+        if (Input.GetKeyDown(KeyCode.A) && transform.position.x>-0.5f && !isMove)
         {
             //transform.Translate(new Vector3(-shift, 0, 0));
-            transform.DOMoveX(transform.position.x - shift, 0.2f);
+            transform.DOMoveX(transform.position.x - shift, 0.2f).OnComplete(isMoveToFalse);
+            isMove = true;
         }
-        else if (Input.GetKeyDown(KeyCode.D) && transform.position.x<0.5)
+        else if (Input.GetKeyDown(KeyCode.D) && transform.position.x<0.5 && !isMove)
         {
             //transform.Translate(new Vector3(shift, 0, 0));
-            transform.DOMoveX(transform.position.x + shift, 0.2f);
+            transform.DOMoveX(transform.position.x + shift, 0.2f).OnComplete(isMoveToFalse);
+            isMove = true;
         }
         #endregion
 
-
     }
+
+    void isMoveToFalse()
+    {
+        isMove = false;
+    }
+
+
     /// <summary>
     /// ilk çarpýþtýgýmýz an
     /// </summary>
@@ -67,17 +104,125 @@ public class PlayerController : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Obstacle"))
         {
+            int damage = other.gameObject.GetComponent<Obstacle>().damage;
+
+            if (isShieldActive)
+            {
+                Destroy(other.gameObject);
+                isShieldActive = false;
+            }
+            else
+            {
+                CheckHealth(damage, other.gameObject);
+            }
+
+            
+        }
+    }
+    private void CheckHealth(int damage, GameObject other)
+    {
+        Health -= damage;
+        if (Health <= 0)
+        {
+            anim.SetBool("Death", true);
+            isDead = true;
+        }
+        else
+        {
+            Destroy(other.gameObject);
+        }
+    }
+
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Collectable"))
+        {
+            Collectables collectables = other.GetComponent<Collectables>();
+            switch (collectables.collectablesEnum)
+            {
+                case CollectablesEnum.Coin:
+                    AddScrore(collectables.toBeAddedScore);
+                    break;
+                case CollectablesEnum.Shield:
+                    ActivateShield();
+                    break;
+                case CollectablesEnum.Score2X:
+                    ActivateBonus();
+                    break;
+                case CollectablesEnum.SpeedUp:
+                    AddSpeed(collectables.toBeAddedSpeed);
+                    break;
+                case CollectablesEnum.Health:
+                    AddHealth(collectables.toBeAddedHealth);
+                    break;
+                case CollectablesEnum.Magnet:
+                    ActivateMagnet();
+                    break;
+            }
+            Destroy(other.gameObject);
+        }
+    }
+
+    private void AddSpeed(int toBeAddedSpeed)
+    {
+        beforeSpeed = speed;
+        speed += toBeAddedSpeed;
+        Invoke("BackToOrijinalSpeed", 5f);
+    }
+
+    void BackToOrijinalSpeed()
+    {
+        speed = beforeSpeed;
+    }
+    void AddScrore(int toBeAddedScore)
+    {
+        if (is2XActive)
+        {
+            toBeAddedScore *= 2;
+        }
+        score += toBeAddedScore;
+    }
+
+    void ActivateShield()
+    {
+        isShieldActive = true;
+        Invoke("DeactivateShield", 5f);
+    }
+
+    void DeactivateShield()
+    {
+        isShieldActive = false;
+    }
+
+    void AddHealth(int toBeAddedHealth)
+    {
+        Health += toBeAddedHealth;
+        if (Health <= 0)
+        {
             anim.SetBool("Death", true);
             isDead = true;
         }
     }
-
-    private void OnTriggerEnter(Collider other)
+    void ActivateBonus()
     {
-        if (other.CompareTag("Coin"))
-        {
-            score += 10;
-            Destroy(other.gameObject);
-        }
+        is2XActive = true;
+        Invoke("DeactivateBonus", 5f);
+    }
+
+    void DeactivateBonus()
+    {
+        isShieldActive = false;
+    }
+
+    void ActivateMagnet()
+    {
+        isMagnetActive = true;
+        Invoke("DeactivateMagnet", 5f);
+    }
+
+    void DeactivateMagnet()
+    {
+        isMagnetActive = false;
     }
 }
